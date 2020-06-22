@@ -2,16 +2,12 @@ const connection = require('../database/connections')
 
 module.exports = {
     async index (req, res) {
-        const { page = 1 } = req.query 
-
         const [count] = await connection('incidents').count()
 
         res.header('X-Total-Count', count['count(*)'])
 
         const incidents = await connection('incidents')
             .join('ongs', 'ongs.id', '=', 'incidents.ong_id')
-            .limit(5)
-            .offset((page - 1) * 5)
             .select([
                 'incidents.*',
                 'ongs.name',
